@@ -1,0 +1,35 @@
+spring:
+  thymeleaf:
+    cache: false
+  config:
+    import:
+      - optional:secret-dev.properties
+      - app-dev.yaml
+logging:
+  file:
+    name: spring.log
+  level:
+    root: INFO
+    org:
+      springframework:
+        cache: TRACE
+        security: DEBUG
+        cloud:
+          gateway: DEBUG
+        data:
+          r2dbc: TRACE
+        r2dbc: DEBUG
+        boot:
+          autoconfigure: INFO
+    com:
+      azure:
+        storage: DEBUG
+      rabbitmq: DEBUG
+      example:
+          demo: DEBUG
+    reactor:
+      netty:
+        http:
+          client: INFO
+server:
+  port: 4000

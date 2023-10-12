@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- https://www.thymeleaf.org/doc/tutorials/3.1/usingthymeleaf.html#text-literals -->
+
+<head>
+	<title>Good Thymes Virtual Grocery</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	<form action="/leave" , method="POST" th:action="@{/leave}" th:method="POST">
+		<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" th:type="hidden"/> -->
+		<button type="submit" th:type="submit">logout</button>
+	</form>
+
+</body>
+
+</html>

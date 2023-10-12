@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+
+</header>
+
+<body>
+
+  <script th:inline="javascript" th:fragment="toast (icon, message)">
+    /*<![CDATA[*/
+
+    pu.Toast.fire({
+      icon: /*[[${icon}]]*/  'success',
+      title: /*[[${message}]]*/ 'Signed in successfully'
+    })
+
+    /*]]>*/
+  </script>
+  
+</body>
+
+</html>

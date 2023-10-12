@@ -1,0 +1,34 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout.html}">
+
+<head>
+    <title>Interactive Spring boot application </title>
+</head>
+
+<body>
+
+    <!-- <div layout:fragment="pageheader">Home Page.</div> -->
+
+    <main layout:fragment="mainblock">
+        <!-- <p>Hello world.</p>
+        <div layout:insert="~{layouts/modal :: modal(title='Greetings')}">
+            <p layout:fragment="modal-content">Hi there! 👋</p>
+        </div> -->
+
+        <a href="/protected/a" th:href="@{/protected/a}">/protected/a</a>
+        <p></p>
+        <a href="/protected/adminonly/a" th:href="@{/protected/adminonly/a}">/protected/adminonly/a</a>
+
+        <div>
+            <h2>All Users</h2>
+            <p>name/password, accesskeys</p>
+            <ul>
+                <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <span th:each="ak : ${user.accesskeys}"
+                        th:text="${ak}"></span></li>
+            </ul>
+        </div>
+
+    </main>
+</body>
+
+</html>

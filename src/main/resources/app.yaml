@@ -1,0 +1,14 @@
+app:
+  static-resources:
+    - paths: [/forever/**]
+      locations: [classpath:/forever/]
+      cache: forever
+    - paths: [/htmx/**]
+      locations: [classpath:/htmx/]
+      cache: default
+  datasource:
+    url: ${R2DBC_URL:r2dbc:h2:file:///../testdb}
+  server-root-uri: ${SERVER_ROOT_URI:http://localhost:4000}
+  easy-auth:
+    protected-area: /app/**
+    login-page: /login/

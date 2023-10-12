@@ -1,0 +1,15 @@
+.spinner-grow {
+	display: none;
+}
+
+.htmx-request .clicked-indicator-container .spinner-grow {
+	display: inline-block;
+}
+
+.htmx-request .clicked-indicator-container .hide-during-req {
+	display: none;
+}
+
+.cm-editor-wrap {
+	min-height: 300px;
+}

@@ -1,0 +1,22 @@
+spring:
+  thymeleaf:
+    cache: false
+  messages:
+    basename: i18n.messages
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      enabled: true
+  config:
+    import:
+      - optional:secret.properties
+      - app.yaml
+  cache:
+    cache-names:  tags_list
+    caffeine:
+      spec: "maximumSize=500,expireAfterAccess=600s"
+server:
+  port: ${SERVER_PORT:8080}
+logging:
+  level:
+    root: WARN

@@ -1,5 +1,7 @@
 package com.example.springsecurity.app;
 
+import java.util.stream.Stream;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -21,9 +23,11 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
   public DemoAuthenticationFilter(ReactiveAuthenticationManager authenticationManager,
       ServerAuthenticationSuccessHandler serverAuthenticationSuccessHandler,
       ServerAuthenticationFailureHandler serverAuthenticationFailureHandler,
-      AppProperties appProperties, ObjectMapper objectMapper) {
+      AppProperties appProperties,
+      String contextPath,
+      ObjectMapper objectMapper) {
     super(authenticationManager);
-    setRequiresAuthenticationMatcher(new DemoAuthenticatedServerWebExchangeMatcher());
+    setRequiresAuthenticationMatcher(new DemoAuthenticatedServerWebExchangeMatcher(contextPath));
     setServerAuthenticationConverter(new DemoServerAuthenticationConverter(objectMapper));
     setAuthenticationSuccessHandler(serverAuthenticationSuccessHandler);
     setAuthenticationFailureHandler(serverAuthenticationFailureHandler);
@@ -41,6 +45,17 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
    * request.
    */
   public static class DemoAuthenticatedServerWebExchangeMatcher implements ServerWebExchangeMatcher {
+
+    private final String[] matchPathes;
+
+    /**
+     * @param matchPathes
+     */
+    public DemoAuthenticatedServerWebExchangeMatcher(String contextPath) {
+      this.matchPathes = new String[] { contextPath + "/custom-login-page",
+          contextPath + "/skipcsrf/custom-login-page" };
+    }
+
     @Override
     public Mono<MatchResult> matches(ServerWebExchange exchange) {
 
@@ -52,7 +67,7 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
           return false;
         }
         String path = exchange.getRequest().getPath().value();
-        return "/custom-login-page".equals(path) || "/skipcsrf/custom-login-page".equals(path);
+        return Stream.of(matchPathes).anyMatch(path::equals);
       }).switchIfEmpty(MatchResult.notMatch());
     }
   }

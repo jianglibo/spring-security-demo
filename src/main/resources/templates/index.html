@@ -18,6 +18,11 @@
         <p></p>
         <a href="/protected/adminonly/a" th:href="@{/protected/adminonly/a}">/protected/adminonly/a</a>
 
+
+        <p>
+            <a th:if="${user}" th:href="@{/leave}">You login as <span style="color: blue;" th:text="${user.name}"></span>, Logout</a>
+        </p>
+
         <div>
             <h2>All Users</h2>
             <p>name/password, accesskeys</p>

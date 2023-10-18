@@ -8,18 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+import org.springframework.boot.web.reactive.error.ErrorAttributes;
+import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
+import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.result.view.ViewResolver;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.spring6.SpringWebFluxTemplateEngine;
@@ -31,6 +38,7 @@ import org.thymeleaf.templateresource.ITemplateResource;
 import com.example.springsecurity.app.AppProperties;
 import com.example.springsecurity.app.AppProperties.StaticResourceDescription;
 import com.example.springsecurity.app.ClasspathAssetsService;
+import com.example.springsecurity.app.DefaultErrorWebExceptionHandlerModified;
 import com.example.springsecurity.app.ModifiableTemplateResource;
 
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +100,23 @@ public class SpringsecurityApplication implements WebFluxConfigurer {
 		resolver.setOrder(1);
 		resolver.setCheckExistence(properties.isCheckTemplate());
 		return resolver;
+	}
+
+	@Bean
+	@Order(-2)
+	ErrorWebExceptionHandler errorWebExceptionHandler(ErrorAttributes errorAttributes,
+			ServerProperties serverProperties,
+			WebProperties webProperties, ObjectProvider<ViewResolver> viewResolvers,
+			ServerCodecConfigurer serverCodecConfigurer, ApplicationContext applicationContext) {
+		DefaultErrorWebExceptionHandlerModified exceptionHandler = new DefaultErrorWebExceptionHandlerModified(
+				errorAttributes,
+				webProperties.getResources(), serverProperties.getError(),
+				applicationContext);
+
+		exceptionHandler.setViewResolvers(viewResolvers.orderedStream().toList());
+		exceptionHandler.setMessageWriters(serverCodecConfigurer.getWriters());
+		exceptionHandler.setMessageReaders(serverCodecConfigurer.getReaders());
+		return exceptionHandler;
 	}
 
 	/**

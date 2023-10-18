@@ -26,10 +26,10 @@
 				<div class="" id="layout">
 					<a aria-label="Toggle Menu" href="#menu" id="menuLink" class="menu-link "><span></span></a>
 					<div class="" id="menu">
-						<div class="pure-menu"><a class="pure-menu-heading" href="/">兔比</a>
+						<div class="pure-menu"><a class="pure-menu-heading" th:href="@{/}">兔比</a>
 							<ul class="pure-menu-list">
 								<li class="pure-menu-item "><a class="pure-menu-link" title="Enter App."
-										href="/filters" th:text="#{nav.filters}">Filters</a></li>
+										th:href="@{/filters}" th:text="#{nav.filters}">Filters</a></li>
 <!-- 
 								<li class="pure-menu-item "><a class="pure-menu-link" title="Plans"
 										href="/app/plans/">Plans</a></li>

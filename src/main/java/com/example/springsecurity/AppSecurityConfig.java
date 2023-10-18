@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -146,6 +148,7 @@ public class AppSecurityConfig {
 	SecurityWebFilterChain simpleAuthWebFilterChain(
 			ServerHttpSecurity http,
 			AppProperties appProperties,
+			ServerProperties serverProperties,
 			ObjectMapper objectMapper,
 			ServerAuthenticationSuccessHandler serverAuthenticationSuccessHandler,
 			ServerAuthenticationFailureHandler serverAuthenticationFailureHandler,
@@ -153,7 +156,8 @@ public class AppSecurityConfig {
 			ReactiveAuthenticationManager authenticationManager,
 			ServerSecurityContextRepository serverSecurityContextRepository,
 			ServerAuthenticationEntryPoint entryPoint,
-			ServerRequestCache serverRequestCache) {
+			ServerRequestCache serverRequestCache,
+			@Value("${spring.webflux.base-path:}") String contextPath) {
 		http.formLogin(fl -> fl.disable());
 		http.httpBasic(hb -> hb.disable());
 
@@ -184,7 +188,7 @@ public class AppSecurityConfig {
 		WebFilter demoAuthenticationFilter = demoAuthenticationFilter(
 				serverAuthenticationSuccessHandler,
 				serverAuthenticationFailureHandler,
-				appProperties,
+				appProperties, contextPath,
 				objectMapper, authenticationManager,
 				serverSecurityContextRepository);
 
@@ -227,7 +231,9 @@ public class AppSecurityConfig {
 							ServerHttpResponse response = exchange.getResponse();
 							response.setStatusCode(HttpStatus.SEE_OTHER);
 							URI newLocation = URI
-									.create("/custom-access-deny-page?url=" + exchange.getRequest().getPath().value());
+									.create(exchange.getRequest().getPath().contextPath().value()
+											+ "/custom-access-deny-page?url="
+											+ exchange.getRequest().getPath().value());
 							response.getHeaders().setLocation(newLocation);
 							return Mono.empty();
 						});
@@ -258,7 +264,7 @@ public class AppSecurityConfig {
 												.doOnError((error) -> DataBufferUtils.release(buffer));
 									});
 						}
-						String uri = "/custom-login-page?error="
+						String uri = exchange.getRequest().getPath().contextPath().value() + "/custom-login-page?error="
 								+ URLEncoder.encode(ex.getMessage(), StandardCharsets.UTF_8);
 						ServerHttpResponse response = exchange.getResponse();
 						if (HxRequestHeaders.isHxRequest(exchange.getRequest())) {
@@ -281,14 +287,19 @@ public class AppSecurityConfig {
 		return (webFilterExchange, authentication) -> {
 			return Mono.defer(() -> {
 				ServerWebExchange exchange = webFilterExchange.getExchange();
+				String contextPath = exchange.getRequest().getPath().contextPath().value();
 				return serverRequestCache.getRedirectUri(exchange)
-						.defaultIfEmpty(URI.create("/"))
+						.defaultIfEmpty(URI.create(contextPath + "/"))
 						.flatMap(uri -> {
 							ServerHttpResponse response = exchange.getResponse();
 							if (HxRequestHeaders.isHxRequest(exchange.getRequest())) {
 								String reqPath = exchange.getRequest().getPath().value();
-								if (reqPath.startsWith("/custom-login-page")) {
-									response.getHeaders().add(HxResponseHeaders.REDIRECT.getValue(), uri.toString());
+								String saveUri = uri.toString();
+								if (!saveUri.startsWith(contextPath)) {
+									saveUri = contextPath + saveUri;
+								}
+								if (reqPath.endsWith("/custom-login-page")) {
+									response.getHeaders().add(HxResponseHeaders.REDIRECT.getValue(), saveUri);
 									response.setStatusCode(HttpStatus.NO_CONTENT);
 								} else {
 									return webFilterExchange.getChain().filter(exchange);
@@ -313,6 +324,7 @@ public class AppSecurityConfig {
 			ServerAuthenticationSuccessHandler serverAuthenticationSuccessHandler,
 			ServerAuthenticationFailureHandler serverAuthenticationFailureHandler,
 			AppProperties appProperties,
+			String contextPath,
 			ObjectMapper objectMapper,
 			ReactiveAuthenticationManager demoAuthorizationReactiveAuthenticationManager,
 			ServerSecurityContextRepository serverSecurityContextRepository) {
@@ -320,7 +332,9 @@ public class AppSecurityConfig {
 				demoAuthorizationReactiveAuthenticationManager,
 				serverAuthenticationSuccessHandler,
 				serverAuthenticationFailureHandler,
-				appProperties, objectMapper);
+				appProperties,
+				contextPath,
+				objectMapper);
 		filter.setSecurityContextRepository(serverSecurityContextRepository); //
 		return filter;
 	}

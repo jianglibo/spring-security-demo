@@ -7,8 +7,14 @@
 </head>
 
 <body>
-	<div layout:fragment="pageheader">Protected Page A. Admin only</div>
-	<main layout:fragment="mainblock">
+	<div layout:fragment="header">Protected AdminOnly Page A.</div>
+
+	<main layout:fragment="content">
+		<p>
+			You login as <span style="color: blue;" th:text="${user.name}"></span>, <a th:if="${user}"
+				th:href="@{/leave}">Logout</a>
+
+		</p>
 	</main>
 </body>
 

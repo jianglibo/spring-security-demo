@@ -33,3 +33,5 @@ logging:
           client: INFO
 server:
   port: 4000
+  # servlet:
+  #   context-path: /context-path

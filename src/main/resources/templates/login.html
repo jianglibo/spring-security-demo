@@ -21,15 +21,15 @@
                     <fieldset>
                         <legend>post url: /custom-login-page</legend>
 
-                        <label for="username">Username</label>
-                        <input id="username" name="username" type="text" placeholder="Username">
+                        <label th:for="${#ids.next('username-')}">Username</label>
+                        <input th:id="${#ids.seq('username-')}" name="username" type="text" placeholder="Username">
 
-                        <label for="password">Password</label>
-                        <input id="password" name="password" type="password" placeholder="Password">
+                        <label th:for="${#ids.next('password-')}">Password</label>
+                        <input th:id="${#ids.seq('password-')}" name="password" type="password" placeholder="Password">
 
-                        <label for="remember-me" class="pure-checkbox">
+                        <!-- <label for="remember-me" class="pure-checkbox">
                             <input id="remember-me" name="remember-me" type="checkbox"> Remember me
-                        </label>
+                        </label> -->
 
                         <button type="submit" class="pure-button pure-button-primary">Sign in</button>
                     </fieldset>
@@ -51,9 +51,9 @@
                         <label for="password">Password</label>
                         <input id="password" name="password" type="password" placeholder="Password">
 
-                        <label for="remember-me" class="pure-checkbox">
+                        <!-- <label for="remember-me" class="pure-checkbox">
                             <input id="remember-me" name="remember-me" type="checkbox"> Remember me
-                        </label>
+                        </label> -->
 
                         <button type="submit" class="pure-button pure-button-primary">Sign in</button>
                     </fieldset>
@@ -69,7 +69,7 @@
             <div class="pure-u-1-3">
                 <span>GET url: /custom-login-page, login by X-API-KEY header. </span>
                 <ul>
-                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button hx-get="/custom-login-page"
+                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button th:hx-get="@{/custom-login-page}"
                             th:hx-headers="${@utilBean.map2json({{'X-API-KEY': user.accesskeys[0]}})}"
                             th:each="ak : ${user.accesskeys}"
                             th:text="${@utilBean.map2json({{'X-API-KEY': user.accesskeys[0]}})}"></button></li>
@@ -91,12 +91,12 @@
                 </span>
                 <ul>
                     <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button
-                            hx-post="/custom-login-page"
+                            th:hx-post="@{/custom-login-page}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;, &quot;${_csrf.headerName}&quot;: &quot;${_csrf.token}&quot;}|"
                             th:each="ak : ${user.accesskeys}"
                             th:text="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;, &quot;${_csrf.headerName}&quot;: &quot;${_csrf.token}&quot;}|"></button>
                     </li>
-                    <li>noneexistuser/noneexistpassword, <button hx-get="/custom-login-page"
+                    <li>noneexistuser/noneexistpassword, <button th:hx-get="@{/custom-login-page}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;000000000000000&quot;, &quot;${_csrf.headerName}&quot;: &quot;${_csrf.token}&quot;}|"
                             th:text="|{&quot;X-API-KEY&quot;: &quot;000000000000000&quot;, &quot;${_csrf.headerName}&quot;: &quot;${_csrf.token}&quot;}|">000000000000000000000000000</button>
                     </li>
@@ -113,11 +113,11 @@
                 <span>GET any protected url: /protected/a, authenticate by X-API-KEY header, and reach the resource
                     directly. </span>
                 <ul>
-                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button hx-get="/protected/a"
+                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button th:hx-get="@{/protected/a}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;}|"
                             th:each="ak : ${user.accesskeys}"
                             th:text="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;}|"></button></li>
-                    <li>noneexistuser/noneexistpassword, <button hx-get="/protected/a"
+                    <li>noneexistuser/noneexistpassword, <button th:hx-get="@{/protected/a}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;000000000000000000000&quot;}|"
                             th:text="|{&quot;X-API-KEY&quot;: &quot;000000000000000000000&quot;}|">X-API-KEY:
                             00000000000000000</button>
@@ -134,12 +134,12 @@
             <div class="pure-u-1-3">
                 <span>GET any protected url: /protected/a, authenticate by X-API-KEY header, and return JSON. </span>
                 <ul>
-                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button hx-get="/protected/a"
+                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button th:hx-get="@{/protected/a}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;, &quot;Accept&quot;: &quot;application/json&quot;}|"
                             th:each="ak : ${user.accesskeys}"
                             th:text="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;, &quot;Accept&quot;: &quot;application/json&quot;}|"></button>
                     </li>
-                    <li>noneexistuser/noneexistpassword, <button hx-get="/protected/a"
+                    <li>noneexistuser/noneexistpassword, <button th:hx-get="@{/protected/a}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;000000000000000000000&quot;, &quot;Accept&quot;: &quot;application/json&quot;}|"
                             th:text="|{&quot;X-API-KEY&quot;: &quot;000000000000000000000&quot;, &quot;Accept&quot;: &quot;application/json&quot;}|">000000000000000000000000000</button>
                     </li>

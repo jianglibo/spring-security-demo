@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+	<title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Spring Security demonstration</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="/forever/htmx.org@1.9.5/dist/htmx.min.js"
+		th:src="@{/forever/htmx.org@1.9.5/dist/htmx.min.js}"></script>
+	<script src="/forever/codemirror/editor.bundle.min.d7f1d26143fab3a50edfb8383b251bb6.js"
+		th:src="@{/forever/codemirror/editor.bundle.min.d7f1d26143fab3a50edfb8383b251bb6.js}"></script>
+	<script src="/forever/sweetalert2/v11.7.27.js" th:src="@{/forever/sweetalert2/v11.7.27.js}"></script>
+	<link rel="stylesheet" href="/forever/purecss@3.0.0/pure-min.css"
+		th:href="@{/forever/purecss@3.0.0/pure-min.css}" />
+	<link rel="stylesheet" href="/htmx/assets/css/main.css">
+</head>
+
+<body>
+	<h2>Current login user:</h2>
+	<div th:if="${user} != null">
+		<p>username: <span th:text="${user.name}"></span>, <span><a href="/leave">Logout</a></span></p>
+		<p>roles: <span th:each="au : ${user.authorities}" th:text="${au} + ','"></span></p>
+	</div>
+	<div th:if="${user} == null">
+		<p th:text="'you are not logged in.'"></p>
+	</div>
+
+	<div layout:fragment="pageheader"></div>
+	<main layout:fragment="mainblock">
+		<p>content goes here.</p>
+	</main>
+
+	<a th:unless="${tctx.pathIs('/')}" href="/">Home</a>
+
+	<h2>Csrf value:</h2>
+	<span th:text="${ccsrf}"></span>
+
+</body>
+
+</html>

@@ -25,8 +25,6 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
     super(authenticationManager);
     setRequiresAuthenticationMatcher(new DemoAuthenticatedServerWebExchangeMatcher());
     setServerAuthenticationConverter(new DemoServerAuthenticationConverter(objectMapper));
-    // setAuthenticationSuccessHandler(new
-    // WebFilterChainServerAuthenticationSuccessHandler());
     setAuthenticationSuccessHandler(serverAuthenticationSuccessHandler);
     setAuthenticationFailureHandler(serverAuthenticationFailureHandler);
   }

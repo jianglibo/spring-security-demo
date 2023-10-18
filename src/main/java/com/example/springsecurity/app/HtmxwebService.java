@@ -1,16 +1,26 @@
 package com.example.springsecurity.app;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.csrf.CsrfToken;
 import org.springframework.security.web.server.savedrequest.ServerRequestCache;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.WebFilter;
 
 import com.example.springsecurity.data.UserRepo;
 import com.example.springsecurity.htmx.HxResponseUtil;
@@ -28,6 +38,15 @@ public class HtmxwebService {
   ServerRequestCache webSessionServerRequestCache;
 
   @Autowired
+  ApplicationContext applicationContext;
+
+  @Autowired
+  SecurityWebFilterChain securityWebFilterChain;
+
+  @Autowired
+  Environment environment;
+
+  @Autowired
   UserRepo userRepo;
 
   public Mono<ServerResponse> index(ServerRequest req) {
@@ -39,6 +58,33 @@ public class HtmxwebService {
           return ThymeleafCtx.create(req, model).flatMap(ctx -> {
             return ServerResponse.ok().render("index.html", ctx.getModel());
           });
+        });
+  }
+
+  public Mono<ServerResponse> listWebfilterBeans(ServerRequest req) {
+    Mono<CsrfToken> csrfToken = req.exchange().getRequiredAttribute(CsrfToken.class.getName());
+    return csrfToken
+        .flatMap(csrf -> {
+
+          Map<String, WebFilter> webFilterBeans = applicationContext.getBeansOfType(WebFilter.class);
+          // Sort the WebFilters based on their order
+          List<WebFilter> sortedWebFilters = new ArrayList<>(webFilterBeans.values());
+          sortedWebFilters.sort(AnnotationAwareOrderComparator.INSTANCE);
+          return securityWebFilterChain.getWebFilters().map(c -> c.getClass().getName())
+              .collectList().flatMap(securityFilters -> {
+                Map<String, Object> model = Map.of(
+                    "default_locale", Locale.getDefault(),
+                    "sortedWebFilters",
+                    Stream
+                        .of(sortedWebFilters.stream().map(c -> c.getClass().getName()), Stream.of("--separator---"),
+                            securityFilters.stream())
+                        .flatMap(c -> c).collect(Collectors.toList()),
+                    "fileEncode", System.getProperty("file.encoding"));
+                return ThymeleafCtx.create(req, model).flatMap(thymeleafCtx -> {
+                  return ServerResponse.ok().render("filters", thymeleafCtx.getModel());
+                });
+              });
+
         });
   }
 

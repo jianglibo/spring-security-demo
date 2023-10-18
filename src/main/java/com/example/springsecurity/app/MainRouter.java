@@ -1,10 +1,9 @@
 package com.example.springsecurity.app;
 
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -16,14 +15,13 @@ public class MainRouter {
 
 	@Bean
 	RouterFunction<ServerResponse> htmxweb(HtmxwebService webService) {
-		return route().path("/",
+		return RouterFunctions.route().path("/",
 				b -> {
 					b.GET("/", (ServerRequest req) -> webService.index(req));
 					b.GET("/custom-login-page", (ServerRequest req) -> webService.loginGet(req));
 					b.GET("/custom-access-deny-page",
 							(ServerRequest req) -> webService.accessdenedpage(req));
-					// b.POST("/custom-login-page", (ServerRequest req) ->
-					// webService.loginPost(req));
+					b.GET("/filters", req -> webService.listWebfilterBeans(req));
 					b.path("/protected", b1 -> {
 						b1.path("/adminonly", b2 -> {
 							b2.GET("/a", webService::protectedadmin);
@@ -34,7 +32,6 @@ public class MainRouter {
 							return webService.tpl(req, tpl);
 						});
 					});
-					// b.GET("/{*tpl}", (ServerRequest req) -> webService.tpl(req));
 				}).build();
 	}
 

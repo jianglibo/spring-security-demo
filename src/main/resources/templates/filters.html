@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout.html}">
+
+<head>
+    <title>Interactive Spring boot application </title>
+</head>
+
+<body>
+
+
+    <div class="header" layout:fragment="header">
+        <h1 th:text="#{filters.title}">All webfilters</h1>
+    </div>
+
+    <div class="content" layout:fragment="content">
+
+        <ul>
+            <li th:each="filtername : ${sortedWebFilters}">
+                <span th:style="${filtername.startsWith('com.example.springsecurity')} ? 'color: red;' : ''"
+                    th:text="${filtername}"></span>
+            </li>
+        </ul>
+
+        <p>AppID: <span th:text="${@environment.getProperty('APP_ID', 'no app id.')}"></span></p>
+
+    </div>
+</body>
+
+</html>

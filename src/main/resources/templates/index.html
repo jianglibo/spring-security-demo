@@ -7,13 +7,12 @@
 
 <body>
 
-    <!-- <div layout:fragment="pageheader">Home Page.</div> -->
 
-    <main layout:fragment="mainblock">
-        <!-- <p>Hello world.</p>
-        <div layout:insert="~{layouts/modal :: modal(title='Greetings')}">
-            <p layout:fragment="modal-content">Hi there! 👋</p>
-        </div> -->
+    <div class="header" layout:fragment="header">
+        <h1 th:text="#{home.title}">Federated Identity</h1>
+    </div>
+
+    <div class="content" layout:fragment="content">
 
         <a href="/protected/a" th:href="@{/protected/a}">/protected/a</a>
         <p></p>
@@ -27,8 +26,7 @@
                         th:text="${ak}"></span></li>
             </ul>
         </div>
-
-    </main>
+    </div>
 </body>
 
 </html>

@@ -28,5 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	});
 
+	const languageSwitcher = document.querySelector('.language-switcher');
+	const languageList = document.querySelector('.language-list');
+
+	languageSwitcher.addEventListener('mouseover', () => {
+		languageList.style.display = 'block';
+	});
+
+	languageSwitcher.addEventListener('mouseout', () => {
+		languageList.style.display = 'none';
+	});
+
 })
 

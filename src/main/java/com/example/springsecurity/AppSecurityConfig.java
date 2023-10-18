@@ -1,7 +1,9 @@
 package com.example.springsecurity;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -223,7 +225,7 @@ public class AppSecurityConfig {
 						// redirecto /custom-access-deny-page
 						return Mono.defer(() -> {
 							ServerHttpResponse response = exchange.getResponse();
-							response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
+							response.setStatusCode(HttpStatus.SEE_OTHER);
 							URI newLocation = URI
 									.create("/custom-access-deny-page?url=" + exchange.getRequest().getPath().value());
 							response.getHeaders().setLocation(newLocation);
@@ -248,20 +250,23 @@ public class AppSecurityConfig {
 							response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 							Map<String, Object> errorMsg = Map.of("error", ex.getMessage());
 							DataBufferFactory dataBufferFactory = response.bufferFactory();
-							return Mono.fromCallable(() -> dataBufferFactory.wrap(objectMapper.writeValueAsBytes(errorMsg)))
+							return Mono
+									.fromCallable(
+											() -> dataBufferFactory.wrap(objectMapper.writeValueAsBytes(errorMsg)))
 									.flatMap(buffer -> {
 										return response.writeWith(Mono.just(buffer))
 												.doOnError((error) -> DataBufferUtils.release(buffer));
 									});
 						}
-						String uri = "/custom-login-page?error=" + ex.getMessage();
+						String uri = "/custom-login-page?error="
+								+ URLEncoder.encode(ex.getMessage(), StandardCharsets.UTF_8);
 						ServerHttpResponse response = exchange.getResponse();
 						if (HxRequestHeaders.isHxRequest(exchange.getRequest())) {
 							response.getHeaders().add(HxResponseHeaders.REDIRECT.getValue(),
 									uri);
 							response.setStatusCode(HttpStatus.NO_CONTENT);
 						} else {
-							response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
+							response.setStatusCode(HttpStatus.SEE_OTHER);
 							response.getHeaders().setLocation(URI.create(uri));
 						}
 						return Mono.empty();
@@ -289,7 +294,7 @@ public class AppSecurityConfig {
 									return webFilterExchange.getChain().filter(exchange);
 								}
 							} else {
-								response.setStatusCode(HttpStatus.TEMPORARY_REDIRECT);
+								response.setStatusCode(HttpStatus.SEE_OTHER);
 								response.getHeaders().setLocation(uri);
 							}
 							return Mono.empty();

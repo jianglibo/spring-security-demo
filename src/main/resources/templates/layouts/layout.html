@@ -120,12 +120,33 @@
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		(function () {
+
+			const checkAvailability = function() {
+				// Get the current page URL
+				const currentPageUrl = window.location.href;
+				// Send an AJAX request to the current page URL
+				fetch(currentPageUrl)
+					.then(response => {
+						if (response.status === 200) {
+							// Page is available, refresh it
+							location.reload();
+						} else {
+							document.getElementById('message').textContent = 'Page is not available.';
+						}
+					})
+					.catch(error => {
+						document.getElementById('message').textContent = 'Error checking availability.';
+					});
+			}
+
 			const tellRefreshEndpoint = /*[[${ appProperties.playground.tellRefreshEndpoint + '/sse' }]]*/ 'http://localhost:4000/app/17/c26e35d3-e867-4ff3-ae77-9e53c321d76d/tell-refresh/sse'
 			const eventSource = new EventSource(tellRefreshEndpoint);
 
 			eventSource.addEventListener('message', event => {
 				// handle the message event
 				console.log(event.data);
+				const pollingInterval = 5000; // 5 seconds
+				setInterval(checkAvailability, pollingInterval);
 			});
 
 			eventSource.addEventListener('error', event => {

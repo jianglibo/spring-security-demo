@@ -1,5 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
+
 	const menuLink = document.getElementById('menuLink');
 	const menu = document.getElementById('menu');
 	const layout = document.getElementById('layout');
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Hide the menu when the user clicks outside of it
 	document.addEventListener('click', function (event) {
-		if (!menu.contains(event.target) && event.target !== menuLink) {
+		if (!menu.contains(event.target) && event.target !== menuLink && menuLink.classList.contains('active')) {
 			toggleMenu()
 		}
 	});

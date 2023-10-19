@@ -12,3 +12,11 @@ app:
   easy-auth:
     protected-area: /app/**
     login-page: /login/
+  playground:
+    base-dir: /opt/playground
+    instance-id: ${INSTANCE_ID:default-app}
+    tell-refresh-endpoint: ${TELL_REFRESH_ENDPOINT:http://localhost:4000/app/default-app/tell-refresh}
+    watch-includes:
+      - src/main
+    watch-excludes:
+      - .git

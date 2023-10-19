@@ -24,7 +24,7 @@ import org.springframework.web.server.WebFilter;
 
 import com.example.springsecurity.data.UserRepo;
 import com.example.springsecurity.htmx.HxResponseUtil;
-import com.example.springsecurity.htmx.ThymeleafCtx;
+import com.example.springsecurity.htmx.ThymeleafCtxFactory;
 
 import reactor.core.publisher.Mono;
 
@@ -49,13 +49,16 @@ public class HtmxwebService {
   @Autowired
   UserRepo userRepo;
 
+  @Autowired
+  ThymeleafCtxFactory thymeleafCtxFactory;
+
   public Mono<ServerResponse> index(ServerRequest req) {
     return webSessionServerRequestCache.getRedirectUri(req.exchange())
         .map(uri -> uri.toString())
         .defaultIfEmpty("No saved request, you are visiting this page directly.")
         .flatMap(savedRequest -> {
           Map<String, Object> model = Map.of("savedRequest", savedRequest, "users", userRepo.getUsers());
-          return ThymeleafCtx.create(req, model).flatMap(ctx -> {
+          return thymeleafCtxFactory.create(req, model).flatMap(ctx -> {
             return ServerResponse.ok().render("index.html", ctx.getModel());
           });
         });
@@ -80,7 +83,7 @@ public class HtmxwebService {
                             securityFilters.stream())
                         .flatMap(c -> c).collect(Collectors.toList()),
                     "fileEncode", System.getProperty("file.encoding"));
-                return ThymeleafCtx.create(req, model).flatMap(thymeleafCtx -> {
+                return thymeleafCtxFactory.create(req, model).flatMap(thymeleafCtx -> {
                   return ServerResponse.ok().render("filters", thymeleafCtx.getModel());
                 });
               });
@@ -98,7 +101,7 @@ public class HtmxwebService {
               .flatMap(ck -> {
                 Map<String, Object> model = Map.of("savedRequest", savedRequest,
                     "users", userRepo.getUsers());
-                return ThymeleafCtx.create(req, model).flatMap(ctx -> {
+                return thymeleafCtxFactory.create(req, model).flatMap(ctx -> {
                   return ServerResponse.ok().render("login.html", ctx.getModel());
                 });
               });
@@ -111,7 +114,7 @@ public class HtmxwebService {
         .defaultIfEmpty("No saved request, you are visiting this page directly.")
         .flatMap(savedRequest -> {
           Map<String, Object> model = Map.of("savedRequest", savedRequest);
-          return ThymeleafCtx.create(req, model) //
+          return thymeleafCtxFactory.create(req, model) //
               .flatMap(ctx -> {
                 return ServerResponse.ok().render("login.html", ctx.getModel());
               });
@@ -119,7 +122,7 @@ public class HtmxwebService {
   }
 
   public Mono<ServerResponse> protecteda(ServerRequest req) {
-    return ThymeleafCtx.create(req, null) //
+    return thymeleafCtxFactory.create(req, null) //
         .flatMap(ctx -> {
           if (req.headers().header(HttpHeaders.ACCEPT).contains("application/json")) {
             return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON) //
@@ -131,7 +134,7 @@ public class HtmxwebService {
   }
 
   public Mono<ServerResponse> protectedadmin(ServerRequest req) {
-    return ThymeleafCtx.create(req, null) //
+    return thymeleafCtxFactory.create(req, null) //
         .flatMap(ctx -> {
           return ServerResponse.ok().render("app/protectedadmina.html", ctx.getModel());
         });
@@ -139,7 +142,7 @@ public class HtmxwebService {
   }
 
   public Mono<ServerResponse> accessdenedpage(ServerRequest req) {
-    return ThymeleafCtx.create(req, null) //
+    return thymeleafCtxFactory.create(req, null) //
         .flatMap(ctx -> {
           return ServerResponse.ok().render("app/custom-access-deny-page", ctx.getModel());
         });
@@ -149,7 +152,7 @@ public class HtmxwebService {
   public Mono<ServerResponse> tpl(ServerRequest req, String tpl) {
     Map<String, String> queryMap = req.queryParams().toSingleValueMap();
     Map<String, Object> model = new HashMap<>(queryMap);
-    return ThymeleafCtx.create(req, model) //
+    return thymeleafCtxFactory.create(req, model) //
         .flatMap(ctx -> {
           return ServerResponse.ok().render(tpl, ctx.getModel());
         });

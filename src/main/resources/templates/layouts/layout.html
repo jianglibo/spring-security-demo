@@ -13,6 +13,7 @@
 	<link rel="stylesheet" th:href="@{/forever/purecss@3.0.0/pure-min.css}" />
 	<link rel="stylesheet" th:href="@{/htmx/web/main.css}" />
 	<link rel="stylesheet" th:href="@{/forever/cookieconsent/@v2.9.2.css}">
+	<script th:src="@{/forever/topbar1/tp.js}"></script>
 	<script th:src="@{/htmx/web/main.js}"></script>
 	<script th:src="@{/htmx/assets/js/pageutil.js}"></script>
 	<title data-gatsby-head="true"> Automate IT tasks in an intuitive manner, Make use of your existing skills. |
@@ -31,9 +32,10 @@
 							<ul class="pure-menu-list">
 								<li class="pure-menu-item "><a class="pure-menu-link" title="Enter App."
 										th:href="@{/filters}" th:text="#{nav.filters}">Filters</a></li>
-<!-- 
+
 								<li class="pure-menu-item "><a class="pure-menu-link" title="Plans"
-										href="/app/plans/">Plans</a></li>
+										th:href="@{/playground}" th:text="#{playground.title}">Playground</a></li>
+								<!-- 
 								<li class="pure-menu-item "><a class="pure-menu-link" title="blogs"
 										href="/blogs/">Blogs</a></li>
 								<li class="pure-menu-item "><a class="pure-menu-link" title="feedback"
@@ -86,22 +88,17 @@
 													style="list-style: none; margin: 0px; padding: 0px; position: absolute; bottom: 100%; left: 0px; background: rgb(249, 249, 249); border: 1px solid rgb(221, 221, 221); border-radius: 4px; box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px; display: none;">
 													<li
 														style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
-														English</li>
+														<span
+															th:hx-get="@{/language-switcher(lang='en')}">English</span>
+													</li>
 													<li
 														style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
-														日本語</li>
+														<span th:hx-get="@{/language-switcher(lang='ja')}">日本語</span>
+													</li>
 													<li
 														style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
-														中文</li>
-													<li
-														style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
-														Deutsch</li>
-													<li
-														style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
-														française</li>
-													<li
-														style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
-														한국어</li>
+														<span th:hx-get="@{/language-switcher(lang='zh')}">中文</span>
+													</li>
 												</ul>
 											</div>
 											<button style="border:none;background-color: unset;outline: none;"

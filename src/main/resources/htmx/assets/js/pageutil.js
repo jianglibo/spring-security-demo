@@ -76,13 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
 	observer.observe(document.body, { childList: true, subtree: true });
 
 	document.body.addEventListener('htmx:beforeSend', function (evt) {
-		console.log('htmx:beforeSend')
-		topbar.show()
-		// NProgress.start();
+		// console.log('htmx:beforeSend', evt.detail.pathInfo.requestPath)
+		if (!evt.detail.pathInfo.requestPath.endsWith('/tell-refresh')) {
+			topbar.show()
+		}
 	});
 
 	document.body.addEventListener('htmx:afterRequest', function (evt) {
-		console.log('htmx:afterRequest')
+		// console.log('htmx:afterRequest')
 		topbar.hide()
 		// NProgress.done();
 	})

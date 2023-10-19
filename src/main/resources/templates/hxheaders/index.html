@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+</head>
+
+<body>
+	<div th:fragment="hx-response-headers(headers)" th:id="${#ids.seq('playground-headers-')}">
+		<a th:unless="${headers}" href="#" th:hx-get="@{/playground/hxheaders(action='show')}"
+			th:hx-target="|#${#ids.prev('playground-headers-')}|" hx-swap="outerHTML"
+			th:text="#{playground.func.hxresheader.title}">
+		</a>
+		<a href="#" th:if="${headers}" th:hx-target="|#${#ids.prev('playground-headers-')}|" hx-swap="outerHTML"
+			th:hx-get="@{/playground/hxheaders(action='hide')}">Close</a>
+		<form th:if="${headers}" class="pure-form pure-form-aligned"
+			th:hx-get="@{/playground/hxheaders(action='doit')}">
+			<fieldset>
+				<div class="pure-control-group">
+					<label for="multi-state" th:text="#{playground.func.trigger.htmxheader}">Trigger</label>
+					<select th:hx-get="@{/playground/hxheaders(action='headname-changed')}" hx-trigger="change"
+						th:hx-target="|#${#ids.prev('playground-headers-')}|" name="headname" id="multi-state"
+						hx-swap="outerHTML" class="pure-input-1-2">
+						<!-- <option value="optionheader" th:text="#{playground.func.trigger.optiondefault}"></option> -->
+						<option th:each="opt : ${headers}" th:value="${opt.value}" th:text="${opt.name}"
+							th:selected="${selected.name} == ${opt.name}">HX-Trigger</option>
+					</select>
+				</div>
+				<div class="pure-control-group">
+					<label for="header-value">Username</label>
+					<input type="text" id="header-value" th:value="${selected['defaultValue']}"
+						placeholder="header value to response" name="headvalue" />
+					<span class="pure-form-message-inline">This is a required field.</span>
+				</div>
+				<div class="pure-controls">
+					<button type="submit" class="pure-button pure-button-primary">Submit</button>
+				</div>
+
+			</fieldset>
+		</form>
+	</div>
+</body>
+
+</html>

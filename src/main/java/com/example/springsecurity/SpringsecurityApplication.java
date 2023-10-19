@@ -1,5 +1,6 @@
 package com.example.springsecurity;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -17,16 +18,21 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.i18n.LocaleContext;
+import org.springframework.context.i18n.SimpleLocaleContext;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.codec.ServerCodecConfigurer;
+import org.springframework.lang.Nullable;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.i18n.LocaleContextResolver;
 import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.spring6.SpringWebFluxTemplateEngine;
@@ -100,6 +106,30 @@ public class SpringsecurityApplication implements WebFluxConfigurer {
 		resolver.setOrder(1);
 		resolver.setCheckExistence(properties.isCheckTemplate());
 		return resolver;
+	}
+
+	@Bean
+	LocaleContextResolver localeContextResolver() {
+		return new LocaleContextResolver() {
+			@Override
+			public LocaleContext resolveLocaleContext(ServerWebExchange exchange) {
+				String lang = exchange.getAttribute("lang");
+				Locale targetLocale = null;
+				if (lang != null && !lang.isEmpty()) {
+					targetLocale = Locale.forLanguageTag(lang);
+				}
+				if (targetLocale == null) {
+					targetLocale = Locale.getDefault();
+				}
+				return new SimpleLocaleContext(targetLocale);
+			}
+
+			@Override
+			public void setLocaleContext(ServerWebExchange exchange,
+					@Nullable LocaleContext localeContext) {
+				throw new UnsupportedOperationException("Unimplemented method 'setLocaleContext'");
+			}
+		};
 	}
 
 	@Bean

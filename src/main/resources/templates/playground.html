@@ -1,0 +1,26 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout.html}">
+
+<head>
+    <title>Interactive Spring boot application </title>
+</head>
+
+<body>
+
+
+    <div class="header" layout:fragment="header">
+        <h1 th:text="#{playground.title}">All webfilters</h1>
+    </div>
+
+    <div class="content" layout:fragment="content">
+        <div href="#" th:replace="~{hxheaders/index :: hx-response-headers(null)}"></div>
+        <!-- <ul>
+            <li>
+                <span th:text="${filtername}"></span>
+            </li>
+        </ul> -->
+
+    </div>
+</body>
+
+</html>

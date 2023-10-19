@@ -19,17 +19,13 @@
             <div class="pure-u-1-3">
                 <form class="pure-form pure-form-stacked" th:action="@{/custom-login-page}" method="POST">
                     <fieldset>
-                        <legend>post url: /custom-login-page</legend>
+                        <legend th:text="#{login.userpass.csrf}">post url: /custom-login-page</legend>
 
                         <label th:for="${#ids.next('username-')}">Username</label>
                         <input th:id="${#ids.seq('username-')}" name="username" type="text" placeholder="Username">
 
                         <label th:for="${#ids.next('password-')}">Password</label>
                         <input th:id="${#ids.seq('password-')}" name="password" type="password" placeholder="Password">
-
-                        <!-- <label for="remember-me" class="pure-checkbox">
-                            <input id="remember-me" name="remember-me" type="checkbox"> Remember me
-                        </label> -->
 
                         <button type="submit" class="pure-button pure-button-primary">Sign in</button>
                     </fieldset>
@@ -43,7 +39,8 @@
             <div class="pure-u-1-3">
                 <form class="pure-form pure-form-stacked" action="/skipcsrf/custom-login-page" method="POST">
                     <fieldset>
-                        <legend>post url: /skipcsrf/custom-login-page @see AppSecurityConfig.java</legend>
+                        <legend th:text="#{login.userpass.nocsrf}">post url: /skipcsrf/custom-login-page @see
+                            AppSecurityConfig.java</legend>
 
                         <label for="username">Username</label>
                         <input id="username" name="username" type="text" placeholder="Username">
@@ -67,9 +64,10 @@
         <div class="pure-g">
             <div class="pure-u-1-3"></div>
             <div class="pure-u-1-3">
-                <span>GET url: /custom-login-page, login by X-API-KEY header. </span>
+                <span th:text="#{login.xapikey.get}">GET url: /custom-login-page, login by X-API-KEY header. </span>
                 <ul>
-                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button th:hx-get="@{/custom-login-page}"
+                    <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button
+                            th:hx-get="@{/custom-login-page}"
                             th:hx-headers="${@utilBean.map2json({{'X-API-KEY': user.accesskeys[0]}})}"
                             th:each="ak : ${user.accesskeys}"
                             th:text="${@utilBean.map2json({{'X-API-KEY': user.accesskeys[0]}})}"></button></li>
@@ -87,7 +85,8 @@
         <div class="pure-g">
             <div class="pure-u-1-3"></div>
             <div class="pure-u-1-3">
-                <span>POST url: /custom-login-page, login by X-API-KEY header, with _csrf.headerName and _csrf.token
+                <span th:text="#{login.xapikey.post.csrf}">POST url: /custom-login-page, login by X-API-KEY header, with
+                    _csrf.headerName and _csrf.token
                 </span>
                 <ul>
                     <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button
@@ -110,7 +109,8 @@
         <div class="pure-g">
             <div class="pure-u-1-3"></div>
             <div class="pure-u-1-3">
-                <span>GET any protected url: /protected/a, authenticate by X-API-KEY header, and reach the resource
+                <span th:text="#{login.xapi.reach.resource.directly}">GET any protected url: /protected/a, authenticate
+                    by X-API-KEY header, and reach the resource
                     directly. </span>
                 <ul>
                     <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button th:hx-get="@{/protected/a}"
@@ -132,7 +132,8 @@
         <div class="pure-g">
             <div class="pure-u-1-3"></div>
             <div class="pure-u-1-3">
-                <span>GET any protected url: /protected/a, authenticate by X-API-KEY header, and return JSON. </span>
+                <span th:text="#{login.xapi.return.json}">GET any protected url: /protected/a, authenticate by X-API-KEY
+                    header, and return JSON. </span>
                 <ul>
                     <li th:each="user : ${users}">[[${user.name}]]/[[${user.name}]], <button th:hx-get="@{/protected/a}"
                             th:hx-headers="|{&quot;X-API-KEY&quot;: &quot;${user.accesskeys[0]}&quot;, &quot;Accept&quot;: &quot;application/json&quot;}|"
@@ -149,7 +150,8 @@
             <div class="pure-u-1-3"></div>
         </div>
         <h2>
-            Saved reqeust uri in webSessionServerRequestCache: <span th:text="${savedRequest}">/shomewhere</span>
+            <span th:text="#{login.savedrequest}">Saved reqeust uri in webSessionServerRequestCache:</span> : <span
+                th:text="${savedRequest}">/shomewhere</span>
         </h2>
 
     </div>

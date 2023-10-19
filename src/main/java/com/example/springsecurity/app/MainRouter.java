@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MainRouter {
 
 	@Bean
-	RouterFunction<ServerResponse> htmxweb(HtmxwebService webService) {
+	RouterFunction<ServerResponse> htmxweb(HtmxwebService webService, PlaygroundService playgroundService) {
 		return RouterFunctions.route().path("/",
 				b -> {
 					b.GET("/", (ServerRequest req) -> webService.index(req));
@@ -22,6 +22,11 @@ public class MainRouter {
 					b.GET("/custom-access-deny-page",
 							(ServerRequest req) -> webService.accessdenedpage(req));
 					b.GET("/filters", req -> webService.listWebfilterBeans(req));
+					b.path("/playground", b1 -> {
+						b1.GET("", playgroundService::home);
+						b1.GET("/hxheaders", playgroundService::hxheaders);
+					});
+					b.GET("/language-switcher", playgroundService::langswitch);
 					b.path("/protected", b1 -> {
 						b1.path("/adminonly", b2 -> {
 							b2.GET("/a", webService::protectedadmin);

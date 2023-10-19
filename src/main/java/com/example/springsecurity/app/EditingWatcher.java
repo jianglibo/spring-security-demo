@@ -75,7 +75,7 @@ public class EditingWatcher {
 
 	@PostConstruct
 	void post() throws IOException {
-		Path projectRoot = appProperties.playground().baseDir().resolve(appProperties.playground().instanceId());
+		Path projectRoot = appProperties.playground().baseDir().resolve(appProperties.playground().instanceUuid());
 		List<Path> toWatch = appProperties.playground().watchIncludes().stream().map(projectRoot::resolve).toList();
 		List<String> excludedDirs = appProperties.playground().watchExcludes(); // Directories to exclude
 		Mono<Flux<WatchEvent<Path>>> watchFlux = watchDirectoryRecursively(toWatch, excludedDirs);

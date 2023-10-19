@@ -33,7 +33,7 @@ public record AppProperties(
   public static record SpecialFileResources(Resource indexHtml, Resource loginHtml) {
   }
 
-  public static record PlaygroundSettings(Path baseDir, String instanceId, Path defaultAppPath,
+  public static record PlaygroundSettings(Path baseDir, Long appId, String instanceUuid, Path defaultAppPath,
       List<String> watchIncludes,
       String tellRefreshEndpoint,
       List<String> watchExcludes, int userCount) {

@@ -14,7 +14,8 @@ app:
     login-page: /login/
   playground:
     base-dir: /opt/playground
-    instance-id: ${INSTANCE_ID:default-app}
+    instance-uuid: ${INSTANCE_UUID:default-app}
+    app-id: ${APP_ID:0}
     tell-refresh-endpoint: ${TELL_REFRESH_ENDPOINT:http://localhost:4000/app/default-app/tell-refresh}
     watch-includes:
       - src/main

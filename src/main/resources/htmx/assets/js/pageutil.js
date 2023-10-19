@@ -121,6 +121,35 @@ document.addEventListener('DOMContentLoaded', () => {
 		// })
 		// console.log(typeof v)
 	})
+
+
+	function checkAvailability() {
+		// Get the current page URL
+		const currentPageUrl = window.location.href;
+		// Send an AJAX request to the current page URL
+		fetch(currentPageUrl)
+			.then(response => {
+				if (response.status === 200) {
+					// Page is available, refresh it
+					location.reload();
+				} else {
+					document.getElementById('message').textContent = 'Page is not available.';
+				}
+			})
+			.catch(error => {
+				document.getElementById('message').textContent = 'Error checking availability.';
+			});
+	}
+	// Poll for availability every 5 seconds (adjust as needed)
+
+	document.body.addEventListener('startAvailableCheck', function (evt) {
+		console.log('startAvailableCheck')
+		console.log(evt.detail)
+		const pollingInterval = 5000; // 5 seconds
+		setInterval(checkAvailability, pollingInterval);
+		// NProgress.done();
+	})
+
 })
 
 htmx.config.useTemplateFragments = true;

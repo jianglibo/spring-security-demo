@@ -73,7 +73,7 @@
                             th:hx-headers="${@utilBean.map2json({{'X-API-KEY': user.accesskeys[0]}})}"
                             th:each="ak : ${user.accesskeys}"
                             th:text="${@utilBean.map2json({{'X-API-KEY': user.accesskeys[0]}})}"></button></li>
-                    <li>noneexistuser/noneexistpassword, <button hx-get="/custom-login-page"
+                    <li>noneexistuser/noneexistpassword, <button th:hx-get="@{/custom-login-page}"
                             th:hx-headers="${@utilBean.map2json({{'X-API-KEY': '000000000000000000000000000'}})}"
                             th:text="${@utilBean.map2json({{'X-API-KEY': '000000000000000000000000000'}})}">000000000000000000000000000</button>
                     </li>

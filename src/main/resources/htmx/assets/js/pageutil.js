@@ -151,6 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		// NProgress.done();
 	})
 
+
+
 })
 
 htmx.config.useTemplateFragments = true;

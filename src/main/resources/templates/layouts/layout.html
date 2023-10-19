@@ -117,9 +117,25 @@
 		</div>
 	</div>
 	<a th:hx-get="${appProperties.playground.tellRefreshEndpoint}" hx-trigger="every 5s"></a>
-	<script type="text/plain" data-cookiecategory="ads">
-    console.log('"ads" category accepted');
-</script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		(function () {
+			const tellRefreshEndpoint = /*[[${ appProperties.playground.tellRefreshEndpoint + '/sse' }]]*/ 'http://localhost:4000/app/17/c26e35d3-e867-4ff3-ae77-9e53c321d76d/tell-refresh/sse'
+			const eventSource = new EventSource(tellRefreshEndpoint);
+
+			eventSource.addEventListener('message', event => {
+				// handle the message event
+				console.log(event.data);
+			});
+
+			eventSource.addEventListener('error', event => {
+				// handle the error event
+				console.error(event);
+			});
+		})();
+		/*]]>*/
+	</script>
+	<script type="text/plain" data-cookiecategory="ads"> </script>
 	<script defer src="/forever/cookieconsent/@v2.9.2.js" th:src="@{/forever/cookieconsent/@v2.9.2.js}"></script>
 	<script>
 		window.addEventListener('load', function () {

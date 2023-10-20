@@ -47,6 +47,7 @@ public class ThymeleafCtxFactory {
 						mm.putAll(model);
 					}
 					mm.putAll(m);
+					mm.put("pid", ProcessHandle.current().pid());
 					mm.put("appProperties", appProperties);
 					return new ThymeleafCtx(req, mm);
 				});

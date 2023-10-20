@@ -24,3 +24,6 @@ server:
 logging:
   level:
     root: WARN
+    com:
+      example:
+        springsecurity: DEBUG

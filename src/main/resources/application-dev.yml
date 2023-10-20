@@ -34,6 +34,6 @@ logging:
         http:
           client: INFO
 server:
-  port: 4000
+  port: 4001
   # servlet:
   #   context-path: /context-path

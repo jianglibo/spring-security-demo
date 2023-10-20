@@ -79,7 +79,9 @@
 										<div class="pure-u-1-2" style="text-align: left;">
 											<span><code>[20231007]38befb7</code> QQ:418474680</span><a
 												href="https://discord.gg/ZXumFzxkcg"
-												style="margin-left: 5px;">Discord</a><span
+												style="margin-left: 5px;">Discord</a>
+											<span th:if="${pid}" th:text="${pid}"></span>
+												<span
 												style="margin-left: 10px; margin-right: 5px;">Choose A Language:</span>
 											<div class="language-switcher"
 												style="position: relative; display: inline-block; cursor: pointer;">
@@ -116,42 +118,58 @@
 			</div>
 		</div>
 	</div>
-	<a th:hx-get="${appProperties.playground.tellRefreshEndpoint}" hx-trigger="every 5s"></a>
+	<!-- <a th:hx-get="${appProperties.playground.tellRefreshEndpoint}" hx-trigger="every 5s"></a> -->
 	<script th:inline="javascript">
 		/*<![CDATA[*/
 		(function () {
 
-			const checkAvailability = function() {
-				// Get the current page URL
-				const currentPageUrl = window.location.href;
-				// Send an AJAX request to the current page URL
-				fetch(currentPageUrl)
+			const delay = 2000
+			checkServiceReadiness = function () {
+				// Make a fetch request to the endpoint
+				const serviceEndpoint = window.location.href;
+				topbar.show()
+				fetch(serviceEndpoint)
 					.then(response => {
+						topbar.hide()
 						if (response.status === 200) {
-							// Page is available, refresh it
+							console.log(`Service at ${serviceEndpoint} is ready.`);
 							location.reload();
 						} else {
-							document.getElementById('message').textContent = 'Page is not available.';
+							console.log(`Service at ${serviceEndpoint} is not ready. Retrying in ${delay} milli seconds.`);
+							setTimeout(checkServiceReadiness, delay); // Retry after 1 second
 						}
 					})
 					.catch(error => {
-						document.getElementById('message').textContent = 'Error checking availability.';
+						topbar.hide()
+						console.log(`Retrying in ${delay} milli seconds.`);
+						setTimeout(checkServiceReadiness, delay); // Retry after 1 second
 					});
 			}
 
 			const tellRefreshEndpoint = /*[[${ appProperties.playground.tellRefreshEndpoint + '/sse' }]]*/ 'http://localhost:4000/app/17/c26e35d3-e867-4ff3-ae77-9e53c321d76d/tell-refresh/sse'
 			const eventSource = new EventSource(tellRefreshEndpoint);
 
+			var checkOnGoing = false
+
 			eventSource.addEventListener('message', event => {
 				// handle the message event
-				console.log(event.data);
-				const pollingInterval = 5000; // 5 seconds
-				setInterval(checkAvailability, pollingInterval);
+				if (event.data === 'refresh') {
+					// const pollingInterval = 2000; // 5 seconds
+					// setInterval(checkAvailability, pollingInterval);
+					if (checkOnGoing) {
+						return
+					}
+					checkOnGoing = true
+					console.log(`Retrying in ${delay} milli seconds.`);
+					setTimeout(checkServiceReadiness, delay); // Retry after 1 second
+				} else {
+					console.log(event.data);
+				}
 			});
 
 			eventSource.addEventListener('error', event => {
 				// handle the error event
-				console.error(event);
+				console.error("event source got error.", event.data);
 			});
 		})();
 		/*]]>*/

@@ -14,14 +14,13 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-@Component
+// @Component
 public class EditingWatcher {
 
 	@Autowired

@@ -1,6 +1,8 @@
 spring:
   thymeleaf:
     cache: false
+  devtools:
+    add-properties: true
   webflux:
     base-path: ${DEMO_CONTEXT_PATH:/context-path}
   config:

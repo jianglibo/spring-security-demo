@@ -1,6 +1,8 @@
 spring:
   thymeleaf:
     cache: false
+  devtools:
+    add-properties: false
   webflux:
     base-path: ${DEMO_CONTEXT_PATH:/context-path}
   messages:
@@ -27,3 +29,4 @@ logging:
     com:
       example:
         springsecurity: DEBUG
+    web: DEBUG

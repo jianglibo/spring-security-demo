@@ -10,14 +10,17 @@ import org.springframework.security.web.server.authentication.AuthenticationWebF
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.ServerAuthenticationSuccessHandler;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatcher;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.example.springsecurity.app.DemoAuthorizationReactiveAuthenticationManager.DemoAuthAuthenticationToken;
 import com.example.springsecurity.app.DemoAuthorizationReactiveAuthenticationManager.DemoServerAuthenticationConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 public class DemoAuthenticationFilter extends AuthenticationWebFilter {
 
   public DemoAuthenticationFilter(ReactiveAuthenticationManager authenticationManager,
@@ -47,18 +50,22 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
   public static class DemoAuthenticatedServerWebExchangeMatcher implements ServerWebExchangeMatcher {
 
     private final String[] matchPathes;
+    AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-    /**
+
+    /**s
      * @param matchPathes
      */
     public DemoAuthenticatedServerWebExchangeMatcher(String contextPath) {
-      this.matchPathes = new String[] { contextPath + "/custom-login-page",
-          contextPath + "/skipcsrf/custom-login-page" };
+      this.matchPathes = new String[] { contextPath + "custom-login-page",
+          contextPath + "skipcsrf/custom-login-page" };
     }
 
+    /**
+     * {{authentication.filter.matcher.description}}
+     */
     @Override
     public Mono<MatchResult> matches(ServerWebExchange exchange) {
-
       return MatchResult.match().filter(matchResult -> {
         if (exchange.getRequest().getHeaders().containsKey("X-API-KEY")) {
           return true;
@@ -66,7 +73,7 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
         if (exchange.getRequest().getMethod() != HttpMethod.POST) {
           return false;
         }
-        String path = exchange.getRequest().getPath().value();
+        String path = exchange.getRequest().getPath().pathWithinApplication().value();
         return Stream.of(matchPathes).anyMatch(path::equals);
       }).switchIfEmpty(MatchResult.notMatch());
     }

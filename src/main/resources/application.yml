@@ -4,7 +4,7 @@ spring:
   devtools:
     add-properties: false
   webflux:
-    base-path: ${DEMO_CONTEXT_PATH:/context-path}
+    base-path: ${DEMO_CONTEXT_PATH:/context-path/}
   messages:
     basename: i18n.messages
   servlet:

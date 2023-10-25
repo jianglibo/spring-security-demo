@@ -52,8 +52,9 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
     private final String[] matchPathes;
     AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-
-    /**s
+    /**
+     * s
+     * 
      * @param matchPathes
      */
     public DemoAuthenticatedServerWebExchangeMatcher(String contextPath) {
@@ -73,7 +74,9 @@ public class DemoAuthenticationFilter extends AuthenticationWebFilter {
         if (exchange.getRequest().getMethod() != HttpMethod.POST) {
           return false;
         }
-        String path = exchange.getRequest().getPath().pathWithinApplication().value();
+        String path = exchange.getRequest().getPath().value();
+        log.info("authpath: {}, matcherpath1: {}, matcherpath2: {}", path, matchPathes[0],
+            matchPathes[1]);
         return Stream.of(matchPathes).anyMatch(path::equals);
       }).switchIfEmpty(MatchResult.notMatch());
     }

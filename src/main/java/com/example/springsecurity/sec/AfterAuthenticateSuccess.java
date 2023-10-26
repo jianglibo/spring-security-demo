@@ -27,6 +27,7 @@ public class AfterAuthenticateSuccess implements ServerAuthenticationSuccessHand
 
 	@Autowired
 	HxResponseUtil hxResponseUtil;
+	
 	@Autowired
 	ServerRequestCache serverRequestCache;
 

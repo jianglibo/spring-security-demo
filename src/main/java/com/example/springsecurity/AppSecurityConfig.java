@@ -15,8 +15,6 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.ServerAuthenticationEntryPoint;
-import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
 import org.springframework.security.web.server.authentication.ServerAuthenticationFailureHandler;
 import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
 import org.springframework.security.web.server.context.ServerSecurityContextRepository;
@@ -40,6 +38,7 @@ import com.example.springsecurity.sec.IfAccessDenied;
 import com.example.springsecurity.sec.IfAuthFailure;
 import com.example.springsecurity.sec.IfNeededCsrfMissing;
 import com.example.springsecurity.sec.IsItAauthenticationRequest;
+import com.example.springsecurity.sec.WhenNeedAuthentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
@@ -78,14 +77,15 @@ public class AppSecurityConfig {
 		return new WebSessionServerSecurityContextRepository();
 	}
 
-	@Bean
-	ServerAuthenticationEntryPoint entryPoint(AppProperties appProperties,
-			ServerRequestCache serverRequestCache) {
-		RedirectServerAuthenticationEntryPoint entryPoint = new RedirectServerAuthenticationEntryPoint(
-				"/custom-login-page");
-		entryPoint.setRequestCache(serverRequestCache);
-		return entryPoint;
-	}
+	// @Bean
+	// ServerAuthenticationEntryPoint entryPoint(AppProperties appProperties,
+	// ServerRequestCache serverRequestCache) {
+	// RedirectServerAuthenticationEntryPoint entryPoint = new
+	// RedirectServerAuthenticationEntryPoint(
+	// "/custom-login-page");
+	// entryPoint.setRequestCache(serverRequestCache);
+	// return entryPoint;
+	// }
 
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
@@ -99,7 +99,7 @@ public class AppSecurityConfig {
 			ServerWebExchangeMatcher csrfProtectionMatcher,
 			DemoAuthorizationReactiveAuthenticationManager authenticationManager,
 			ServerSecurityContextRepository serverSecurityContextRepository,
-			ServerAuthenticationEntryPoint entryPoint,
+			WhenNeedAuthentication WhenNeedAuthentication,
 			IfAccessDenied ifAccessDenied,
 			IfNeededCsrfMissing ifNeededCsrfMissing,
 			AfterLogoutSuccessfully afterLogoutSuccessfully,
@@ -144,7 +144,7 @@ public class AppSecurityConfig {
 								.logoutHandler(
 										new SecurityContextServerLogoutHandler())
 								.logoutSuccessHandler(afterLogoutSuccessfully))
-						.exceptionHandling(exh -> exh.authenticationEntryPoint(entryPoint)
+						.exceptionHandling(exh -> exh.authenticationEntryPoint(WhenNeedAuthentication)
 								.accessDeniedHandler(ifAccessDenied)));
 		return http.build();
 	}

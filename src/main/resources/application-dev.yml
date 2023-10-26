@@ -4,7 +4,7 @@ spring:
   devtools:
     add-properties: true
   webflux:
-    base-path: ${DEMO_CONTEXT_PATH:/context-path}
+    base-path: ${DEMO_CONTEXT_PATH:/context-path/}
   config:
     import:
       - optional:secret-dev.properties

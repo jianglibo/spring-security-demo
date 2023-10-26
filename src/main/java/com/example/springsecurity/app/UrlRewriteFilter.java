@@ -2,17 +2,21 @@ package com.example.springsecurity.app;
 
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.core.Ordered;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
-public class ContextPathFilter implements WebFilter, Ordered {
+@Slf4j
+@Component
+public class UrlRewriteFilter implements WebFilter, Ordered {
 
 	private ServerProperties serverproperties;
 
-	public ContextPathFilter(ServerProperties serverproperties) {
+	public UrlRewriteFilter(ServerProperties serverproperties) {
 		this.serverproperties = serverproperties;
 	}
 

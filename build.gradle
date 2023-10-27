@@ -30,6 +30,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 	implementation group: 'org.openjdk.nashorn', name: 'nashorn-core', version: '15.4'
+	// https://mvnrepository.com/artifact/org.graalvm.js/js
+	// implementation 'org.graalvm.js:js:23.0.2'
+
 	implementation 'org.webjars.npm:mustache:4.2.0'
 	implementation 'org.webjars.npm:ejs:3.1.8'
 

@@ -12,9 +12,11 @@
     </div>
 
     <div class="content" layout:fragment="content">
-        <div th:utext="#{viewtechs.content(@{/ftl/hello})}">
-            <p>By default, this App using Thymeleaf view. If you put the template under the 'freemarker' folder in the tempaltes folder, it'll use Freemarker Viewresolver.</p>
-            <p>Like this one <a href="/ftl/hello">/ftl/hello</a>i, the corresponding template is templates/freemarker/hello-world.ftl, and the router is /ftl/hello</p>
+        <div th:utext="#{viewtechs.content(@{/ftl/hello(name='Alice')})}">
+            <p>By default, this App using Thymeleaf view. If you put the template under the 'freemarker' folder in the
+                tempaltes folder, it'll use Freemarker Viewresolver.</p>
+            <p>Like this one <a href="/ftl/hello">/ftl/hello</a>i, the corresponding template is
+                templates/freemarker/hello-world.ftl, and the router is /ftl/hello</p>
             <p>Or put the template under the js/ejs, js/mustache to using corresponding view technology.</p>
         </div>
 

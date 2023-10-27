@@ -8,7 +8,7 @@
     </head>
     <body>
         <div class="example-page">
-            <h1>Hello, world!</h1>
+            <h1>Hello, world! ${tctx.param('name', 'Nobody')} </h1>
             <p>If your UTF-8 encoding is set up properly, these elements should be the same:</p>
             <ul>
                 <li>© | &copy; | &#169;</li>

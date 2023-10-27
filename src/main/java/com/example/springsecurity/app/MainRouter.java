@@ -32,8 +32,10 @@ public class MainRouter {
 					});
 					b.path("/ftl", b1 -> {
 						b1.GET("/hello", req -> {
-							return ServerResponse.ok().render("freemarker/hello-world",
-									java.util.Map.of("pageTitle", "Example Freemarker Page"));
+							return thymeleafCtxFactory.create(req, null).flatMap(ctx -> {
+								return ServerResponse.ok().render("freemarker/hello-world",
+										ctx.getModel(java.util.Map.of("pageTitle", "Example Freemarker Page")));
+							});
 						});
 					});
 					b.path("/playground", b1 -> {

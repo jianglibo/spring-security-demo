@@ -77,16 +77,6 @@ public class AppSecurityConfig {
 		return new WebSessionServerSecurityContextRepository();
 	}
 
-	// @Bean
-	// ServerAuthenticationEntryPoint entryPoint(AppProperties appProperties,
-	// ServerRequestCache serverRequestCache) {
-	// RedirectServerAuthenticationEntryPoint entryPoint = new
-	// RedirectServerAuthenticationEntryPoint(
-	// "/custom-login-page");
-	// entryPoint.setRequestCache(serverRequestCache);
-	// return entryPoint;
-	// }
-
 	@Bean
 	@Order(Ordered.HIGHEST_PRECEDENCE)
 	SecurityWebFilterChain simpleAuthWebFilterChain(

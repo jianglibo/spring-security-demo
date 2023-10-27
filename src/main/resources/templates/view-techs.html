@@ -1,0 +1,75 @@
+<!doctype html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout.html}">
+
+<head>
+    <title>Interactive Spring boot application </title>
+</head>
+
+<body>
+
+    <div class="header" layout:fragment="header">
+        <h1 th:text="#{viewtechs.title}">This App support various view technologies. Freemarker, mustache, ejs etc.</h1>
+    </div>
+
+    <div class="content" layout:fragment="content">
+        <div th:utext="#{viewtechs.content(@{/ftl/hello})}">
+            <p>By default, this App using Thymeleaf view. If you put the template under the 'freemarker' folder in the tempaltes folder, it'll use Freemarker Viewresolver.</p>
+            <p>Like this one <a href="/ftl/hello">/ftl/hello</a>i, the corresponding template is templates/freemarker/hello-world.ftl, and the router is /ftl/hello</p>
+            <p>Or put the template under the js/ejs, js/mustache to using corresponding view technology.</p>
+        </div>
+
+        <pre><code class="language-java">
+@Bean
+RouterFunction<ServerResponse> htmxweb(HtmxwebService webService, 
+  PlaygroundService playgroundService,
+  ThymeleafCtxFactory thymeleafCtxFactory) {
+  return RouterFunctions.route().path("/",
+      b -> {
+        b.GET("/", (ServerRequest req) -> webService.index(req));
+        b.GET("/custom-login-page", (ServerRequest req) -> webService.loginGet(req));
+        b.GET("/custom-access-deny-page",
+                (ServerRequest req) -> webService.accessdenedpage(req));
+        b.GET("/filters", req -> webService.listWebfilterBeans(req));
+        b.GET("/freemarker", req -> {
+            return thymeleafCtxFactory.create(req, null).flatMap(ctx -> {
+                return ServerResponse.ok().render("freemarker", ctx.getModel());
+            });
+        });
+        b.path("/ftl", b1 -> {
+            b1.GET("/hello", req -> {
+                return ServerResponse.ok().render("freemarker/hello-world",
+                        java.util.Map.of("pageTitle", "Example Freemarker Page"));
+            });
+        });
+        b.path("/playground", b1 -> {
+            b1.GET("", playgroundService::home);
+            b1.GET("/hxheaders", playgroundService::hxheaders);
+        });
+        b.GET("/language-switcher", playgroundService::langswitch);
+        b.path("/protected", b1 -> {
+            b1.path("/adminonly", b2 -> {
+                b2.GET("/a", webService::protectedadmin);
+            });
+            b1.GET("/a", (ServerRequest req) -> webService.protecteda(req));
+            b1.GET("/{*tpl}", (ServerRequest req) -> {
+                String tpl = req.pathVariable("tpl");
+                return webService.tpl(req, tpl);
+            });
+        });
+        b.GET("/scripts-engine/{*vn}", req -> {
+          return thymeleafCtxFactory.create(req, null).flatMap(ctx -> {
+            String viewname = req.pathVariable("vn");
+            if (viewname.startsWith("/")) {
+            viewname = viewname.substring(1);
+          }
+          return ServerResponse.ok().render(viewname, ctx.getModel());
+          });
+        });
+        }).build();
+}
+
+        </code></pre>
+    </div>
+</body>
+
+</html>

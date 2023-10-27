@@ -13,6 +13,9 @@
 	<link rel="stylesheet" th:href="@{/forever/purecss@3.0.0/pure-min.css}" />
 	<link rel="stylesheet" th:href="@{/htmx/web/main.css}" />
 	<link rel="stylesheet" th:href="@{/forever/cookieconsent/@v2.9.2.css}">
+	<link rel="stylesheet" th:href="@{/forever/highlight.js.11.8.0/atom-one-dark.min.css}">
+	<script th:src="@{/forever/highlight.js.11.8.0/js.js}"></script>
+	<script th:src="@{/forever/highlight.js.11.8.0/java.js}"></script>
 	<script th:src="@{/forever/topbar1/tp.js}"></script>
 	<script th:src="@{/htmx/web/main.js}"></script>
 	<script th:src="@{/htmx/assets/js/pageutil.js}"></script>
@@ -35,6 +38,9 @@
 
 								<li class="pure-menu-item "><a class="pure-menu-link" title="Plans"
 										th:href="@{/playground}" th:text="#{playground.title}">Playground</a></li>
+
+								<li class="pure-menu-item "><a class="pure-menu-link" title="Plans"
+										th:href="@{/view-techs}" th:text="#{nav.viewtechs}">Freemarker</a></li>
 								<!-- 
 								<li class="pure-menu-item "><a class="pure-menu-link" title="blogs"
 										href="/blogs/">Blogs</a></li>
@@ -81,8 +87,8 @@
 												href="https://discord.gg/ZXumFzxkcg"
 												style="margin-left: 5px;">Discord</a>
 											<span th:if="${pid}" th:text="${pid}"></span>
-												<span
-												style="margin-left: 10px; margin-right: 5px;">Choose A Language:</span>
+											<span style="margin-left: 10px; margin-right: 5px;">Choose A
+												Language:</span>
 											<div class="language-switcher"
 												style="position: relative; display: inline-block; cursor: pointer;">
 												<span class="current-language" style="font-weight: bold;">中文</span>
@@ -300,6 +306,7 @@
 			});
 		});
 	</script>
+	<script>hljs.highlightAll();</script>
 </body>
 
 </html>

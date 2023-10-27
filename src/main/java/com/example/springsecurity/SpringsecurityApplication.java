@@ -29,8 +29,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
+import org.springframework.web.reactive.config.ViewResolverRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.result.view.ViewResolver;
+import org.springframework.web.reactive.result.view.script.ScriptTemplateConfigurer;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.i18n.LocaleContextResolver;
 import org.thymeleaf.IEngineConfiguration;
@@ -58,12 +60,42 @@ import lombok.extern.slf4j.Slf4j;
 @EnableReactiveMethodSecurity(useAuthorizationManager = true)
 public class SpringsecurityApplication implements WebFluxConfigurer {
 
+	@Autowired
+	private ApplicationContext applicationContext;
+
 	public static void main(String[] args) {
 		SpringApplication.run(SpringsecurityApplication.class, args);
 	}
 
-	@Autowired
-	private ApplicationContext applicationContext;
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		registry.freeMarker();
+		registry.scriptTemplate().prefix("classpath:/templates/").suffix(".html");
+	}
+
+	@Bean
+	ScriptTemplateConfigurer mustacheScriptConfigurer() {
+		// all secrets lay in the ScriptTemplateConfigurer file.
+		ScriptTemplateConfigurer configurer = new ScriptTemplateConfigurer();
+		configurer.setEngineName("nashorn");
+		configurer.setScripts("META-INF/resources/webjars/mustache/4.2.0/mustache.min.js",
+				"META-INF/resources/webjars/ejs/3.1.8/ejs.js", "templates/js/render.js");
+		configurer.setRenderObject("RenderObject");
+		configurer.setRenderFunction("render");
+		configurer.setSharedEngine(false);
+		return configurer;
+	}
+
+	// @Bean
+	// ScriptTemplateConfigurer ejsScriptconfigurer() {
+	// // all secrets lay in the ScriptTemplateConfigurer file.
+	// ScriptTemplateConfigurer configurer = new ScriptTemplateConfigurer();
+	// configurer.setEngineName("nashorn");
+	// configurer.setScripts("META-INF/resources/webjars/ejs/3.1.8/ejs.js");
+	// configurer.setRenderObject("ejs");
+	// configurer.setRenderFunction("render");
+	// return configurer;
+	// }
 
 	@Bean
 	SpringWebFluxTemplateEngine templateEngine(ThymeleafProperties properties,

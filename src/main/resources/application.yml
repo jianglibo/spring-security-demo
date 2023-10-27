@@ -1,6 +1,17 @@
 spring:
   thymeleaf:
     cache: false
+    enable-spring-el-compiler: true
+    # view-names:
+    excluded-view-names: freemarker/*, mustache/*, js/*
+  freemarker:
+    template-loader-path: classpath:/templates/
+    view-names: freemarker/*
+  mustache:
+    check-template-location: false
+    prefix: classpath:/templates/
+    suffix: .html
+    view-names: mustache/*
   devtools:
     add-properties: false
   webflux:

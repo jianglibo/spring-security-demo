@@ -12,8 +12,8 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
     view-names: mustache/*
-  devtools:
-    add-properties: false
+  # devtools:
+  #   add-properties: false
   webflux:
     base-path: ${DEMO_CONTEXT_PATH:/context-path/}
   messages:

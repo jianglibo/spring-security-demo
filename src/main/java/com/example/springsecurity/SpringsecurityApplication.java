@@ -192,7 +192,7 @@ public class SpringsecurityApplication implements WebFluxConfigurer {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		AppProperties appProperties = applicationContext.getBean(AppProperties.class);
-		log.info(appProperties.serverRootUri());
+		// log.info(appProperties.serverRootUri());
 
 		for (StaticResourceDescription srd : appProperties.staticResources()) {
 			String s = String.join(",", srd.paths());

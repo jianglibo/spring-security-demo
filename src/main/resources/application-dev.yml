@@ -36,6 +36,6 @@ logging:
         http:
           client: INFO
 server:
-  port: 4001
+  port: ${TOBF_SERVER_PORT:4001}
   # servlet:
   #   context-path: /context-path

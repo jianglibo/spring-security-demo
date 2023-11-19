@@ -2,6 +2,7 @@ package com.example.springsecurity.app;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -18,6 +19,10 @@ public record AppProperties(
     List<StaticResourceDescription> staticResources,
     PlaygroundSettings playground) {
 
+  public Map<String, Object> whiteList() {
+    return Map.of("", "");
+  }
+
   public StaticResourceDescription gatsbyPublic() {
     return staticResources().stream().filter(sr -> "gatsbyPublic".equals(sr.name())).findAny()
         .get();
@@ -33,10 +38,14 @@ public record AppProperties(
   public static record SpecialFileResources(Resource indexHtml, Resource loginHtml) {
   }
 
-  public static record PlaygroundSettings(Path baseDir, Long appId, String instanceUuid, Path defaultAppPath,
+  public static record PlaygroundSettings(Path baseDir,
+      Long appId,
+      String instanceUuid,
+      Path defaultAppPath,
       List<String> watchIncludes,
       String tellRefreshEndpoint,
-      List<String> watchExcludes, int userCount) {
+      List<String> watchExcludes,
+      int userCount) {
   }
 
 }

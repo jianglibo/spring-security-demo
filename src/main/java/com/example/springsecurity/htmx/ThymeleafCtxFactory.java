@@ -16,6 +16,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import com.example.springsecurity.app.AppProperties;
 import com.example.springsecurity.data.User;
 import com.example.springsecurity.tool.MyLangUtil;
+import com.example.springsecurity.tool.ProfileParser;
 
 import lombok.Getter;
 import reactor.core.publisher.Mono;
@@ -25,6 +26,9 @@ public class ThymeleafCtxFactory {
 
 	@Autowired
 	AppProperties appProperties;
+
+	@Autowired
+	ProfileParser profileParser;
 
 	public Mono<ThymeleafCtx> createRequireAppInstance(ServerRequest req, Map<String, Object> model) {
 		return create(req, model, true);
@@ -49,6 +53,7 @@ public class ThymeleafCtxFactory {
 					mm.putAll(m);
 					mm.put("pid", ProcessHandle.current().pid());
 					mm.put("appProperties", appProperties);
+					mm.put("profileParser", profileParser);
 					return new ThymeleafCtx(req, mm);
 				});
 	}
@@ -132,6 +137,22 @@ public class ThymeleafCtxFactory {
 				return reqPath.substring(0, idx);
 			} else {
 				return reqPath;
+			}
+		}
+
+		public String env(String envName) {
+			return System.getenv(envName);
+		}
+
+		public boolean isDev() {
+			return ((ProfileParser) model.get("profileParser")).isDev();
+		}
+
+		public String serverRootUri() {
+			if (isDev()) {
+				return "http://localhost:4000";
+			} else {
+				return "https://resp.me";
 			}
 		}
 

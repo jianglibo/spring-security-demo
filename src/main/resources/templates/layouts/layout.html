@@ -308,6 +308,8 @@
 		});
 	</script>
 	<script>hljs.highlightAll();</script>
+	<script
+		th:src="@{|${tctx.serverRootUri()}/livereload/{runenvid}/livereload.js|(runenvid=${tctx.env('TOBF_RUNENV_ID')})}"></script>
 </body>
 
 </html>

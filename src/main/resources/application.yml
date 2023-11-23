@@ -14,6 +14,17 @@ spring:
     view-names: mustache/*
   # devtools:
   #   add-properties: false
+  devtools:
+  # DevToolsProperties
+    restart:
+      pollInterval: 3s
+      enabled: true
+      # excludes: 
+      # additional-exclude:
+      # trigger-file:
+    livereload:
+      enabled: true
+      port: ${TOBF_LIVERELOAD_PORT:35728}
   webflux:
     base-path: /
   messages:
@@ -31,7 +42,7 @@ spring:
     caffeine:
       spec: "maximumSize=500,expireAfterAccess=600s"
 server:
-  port: ${TOBF_SERVER_PORT:8080}
+  port: ${TOBF_SERVER_PORT:8081}
   # servlet:
   #   context-path: /context-path
 logging:
